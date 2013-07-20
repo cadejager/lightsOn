@@ -137,10 +137,15 @@ isAppRunning()
 
     # Check if user want to detect Video fullscreen on Chromium, modify variable chromium_flash_detection if you dont want Chromium detection
     if [ $chromium_flash_detection == 1 ];then
-        if [[ "$activ_win_title" = *exe* ]];then
+        if [[ "$activ_win_title" = *google-chrome* || "$activ_win_title" = *exe* ]];then
         # Check if Chromium/Chrome Flash process is running
             flash_process=`pgrep -lfc ".*((c|C)hrome|chromium).*flashp.*"`
             if [[ $flash_process -ge 1 ]];then
+                return 1
+            fi
+        # Check if pepper flash is running
+            flash_process=`pgrep -lf "chrome --type=ppapi "`
+            if [[ -n $flash_process ]];then
                 return 1
             fi
         fi
@@ -237,3 +242,4 @@ done
 
 
 exit 0
+
